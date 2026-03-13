@@ -46,7 +46,10 @@ Route::add('/v1/parish/([a-z-0-9-]*)/villages', function ($param) use($uganda, $
 
     $names = [];
     foreach($villages as $village):
-    $names[] = $village->name;
+      $names[] = [
+        "id" => $village->id,
+        "name" => $village->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->villages = $names;
