@@ -35,7 +35,10 @@ Route::add('/v1/district/([a-z-0-9-]*)/counties', function ($district) use($ugan
     
     $names = [];
     foreach($counties as $county):
-      $names[] = $county->name;
+      $names[] = [
+        "id" => $county->id,
+        "name" => $county->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->counties = $names;
@@ -58,7 +61,10 @@ Route::add('/v1/district/([a-z-0-9-]*)/subcounties', function ($district) use($u
     
     $names = [];
     foreach($subcounties as $subcounty):
-      $names[] = $subcounty->name;
+      $names[] = [
+        "id" => $subcounty->id,
+        "name" => $subcounty->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->subcounties = $names;
@@ -81,7 +87,10 @@ Route::add('/v1/district/([a-z-0-9-]*)/parishes', function ($district) use($ugan
     
     $names = [];
     foreach($parishes as $parish):
-      $names[] = $parish->name;
+      $names[] = [
+        "id" => $parish->id,
+        "name" => $parish->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->parishes = $names;
@@ -104,7 +113,10 @@ Route::add('/v1/district/([a-z-0-9-]*)/villages', function ($district) use($ugan
     
     $names = [];
     foreach($villages as $village):
-      $names[] = $village->name;
+      $names[] = [
+        "id" => $village->id,
+        "name" => $village->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->villages = $names;
