@@ -40,7 +40,10 @@ Route::add('/v1/county/([a-z-0-9-]*)/subcounties', function ($param) use($uganda
 
     $names = [];
     foreach($subcounties_ as $subcounty):
-      $names[] = $subcounty->name;
+      $names[] = [
+        "id" => $subcounty->id,
+        "name" => $subcounty->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->subcounties = $names;
@@ -66,7 +69,10 @@ Route::add('/v1/county/([a-z-0-9-]*)/parishes', function ($param) use($uganda, $
 
     $names = [];
     foreach($parishes as $parish):
-      $names[] = $parish->name;
+      $names[] = [
+        "id" => $parish->id,
+        "name" => $parish->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->parishes = $names;
@@ -92,7 +98,10 @@ Route::add('/v1/county/([a-z-0-9-]*)/villages', function ($param) use($uganda, $
 
     $names = [];
     foreach($villages as $village):
-      $names[] = $village->name;
+      $names[] = [
+        "id" => $village->id,
+        "name" => $village->name
+      ];
     endforeach;
     $obj->count = $count;
     $obj->villages = $names;
