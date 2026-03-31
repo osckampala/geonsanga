@@ -46,5 +46,8 @@ To try out the example
 1. Project Structure  - [View API Pattern](https://github.com/cim-engineering/view-api-pattern)
 2. Router (Still in the Structure) - [Steampixel's Simple Router](https://github.com/steampixel/simplePHPRouter)
 3. The Ugandan Locale Package - [Uganda Geo Data](https://github.com/kusaasira/uganda-geo-data)
+
+### Official Postman Collection Documentation
+[Run the official PM Collection and Read the docs](https://documenter.getpostman.com/view/4145249/2sBXinJB6F)
 ### License
 This project is available for use under the MIT License.
