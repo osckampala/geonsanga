@@ -2,36 +2,38 @@
 use Steampixel\Route;
 use Uganda\Exceptions\DistrictNotFoundException;
 
-$obj = new stdClass();
-
 /**
  * District Particular operations
  */
 // Get all district details e.g. Mukono
-Route::add('/v1/district/([a-z-0-9-]*)', function ($district) use($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/district/([a-z-0-9-]*)', function ($district) use($uganda) {
   try {
     $dist = $uganda->district($district);
-    
-    $obj->count = 1;
-    $obj->district = $dist;
+    successResponse([
+      'count' => 1,
+      'district' => $dist
+    ]);
   } catch (DistrictNotFoundException $e) {
-    $obj->error =  new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, %s district not found", $district));
+    errorResponse(
+      sprintf('District not found: %s', $district),
+      404,
+      'DISTRICT_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch district',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all counties in a particular district e.g. Mukono
-Route::add('/v1/district/([a-z-0-9-]*)/counties', function ($district) use($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/district/([a-z-0-9-]*)/counties', function ($district) use($uganda) {
   try {
     $counties = $uganda
                 ->district($district)
                 ->counties();
-
-    $count = count($counties);
     
     $names = [];
     foreach($counties as $county):
@@ -40,24 +42,31 @@ Route::add('/v1/district/([a-z-0-9-]*)/counties', function ($district) use($ugan
         "name" => $county->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->counties = $names;
+    successResponse([
+      'count' => count($names),
+      'counties' => $names
+    ]);
   } catch (DistrictNotFoundException $e) {
-    throw new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, %s district not found", $district));
+    errorResponse(
+      sprintf('District not found: %s', $district),
+      404,
+      'DISTRICT_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch district counties',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all subcounties in a particular district e.g.Mukono
-Route::add('/v1/district/([a-z-0-9-]*)/subcounties', function ($district) use($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/district/([a-z-0-9-]*)/subcounties', function ($district) use($uganda) {
   try {
     $subcounties = $uganda
                 ->district($district)
                 ->subcounties();
-
-    $count = count($subcounties);
     
     $names = [];
     foreach($subcounties as $subcounty):
@@ -66,24 +75,31 @@ Route::add('/v1/district/([a-z-0-9-]*)/subcounties', function ($district) use($u
         "name" => $subcounty->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->subcounties = $names;
+    successResponse([
+      'count' => count($names),
+      'subcounties' => $names
+    ]);
   } catch (DistrictNotFoundException $e) {
-    throw new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, %s district not found", $district));
+    errorResponse(
+      sprintf('District not found: %s', $district),
+      404,
+      'DISTRICT_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch district subcounties',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all parishes in a particular district e.g. Mukono
-Route::add('/v1/district/([a-z-0-9-]*)/parishes', function ($district) use($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/district/([a-z-0-9-]*)/parishes', function ($district) use($uganda) {
   try {
     $parishes = $uganda
                 ->district($district)
                 ->parishes();
-
-    $count = count($parishes);
     
     $names = [];
     foreach($parishes as $parish):
@@ -92,24 +108,31 @@ Route::add('/v1/district/([a-z-0-9-]*)/parishes', function ($district) use($ugan
         "name" => $parish->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->parishes = $names;
+    successResponse([
+      'count' => count($names),
+      'parishes' => $names
+    ]);
   } catch (DistrictNotFoundException $e) {
-    throw new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, %s district not found", $district));
+    errorResponse(
+      sprintf('District not found: %s', $district),
+      404,
+      'DISTRICT_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch district parishes',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all villages in a particular district e.g. Mukono
-Route::add('/v1/district/([a-z-0-9-]*)/villages', function ($district) use($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/district/([a-z-0-9-]*)/villages', function ($district) use($uganda) {
   try {
     $villages = $uganda
                 ->district($district)
                 ->villages();
-
-    $count = count($villages);
     
     $names = [];
     foreach($villages as $village):
@@ -118,10 +141,21 @@ Route::add('/v1/district/([a-z-0-9-]*)/villages', function ($district) use($ugan
         "name" => $village->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->villages = $names;
+    successResponse([
+      'count' => count($names),
+      'villages' => $names
+    ]);
   } catch (DistrictNotFoundException $e) {
-    throw new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, %s district not found", $district));
+    errorResponse(
+      sprintf('District not found: %s', $district),
+      404,
+      'DISTRICT_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch district villages',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');

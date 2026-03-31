@@ -7,35 +7,39 @@ error_reporting(E_ALL);
 use Steampixel\Route;
 use Uganda\Exceptions\ParishNotFoundException;
 
-$obj = new stdClass();
-
 /**
  * Parish Particular operations
  */
 // Get all parish details, without a space e.g. 
-Route::add('/v1/parish/([a-z-0-9-]*)', function ($param) use($uganda, $obj) {
+Route::add('/v1/parish/([a-z-0-9-]*)', function ($param) use($uganda) {
 
   $parish = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $parish_ = $uganda->parish($parish);
-    $obj->count = 1;
-    $obj->parish = $parish_;
+    successResponse([
+      'count' => 1,
+      'parish' => $parish_
+    ]);
   } catch (ParishNotFoundException $e) {
-    throw new ParishNotFoundException(sprintf("You're sailing in unchartered waters, %s parish not found", $parish));
+    errorResponse(
+      sprintf('Parish not found: %s', $parish),
+      404,
+      'PARISH_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch parish',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all villages in a parish, without a space e.g. 
-Route::add('/v1/parish/([a-z-0-9-]*)/villages', function ($param) use($uganda, $obj) {
+Route::add('/v1/parish/([a-z-0-9-]*)/villages', function ($param) use($uganda) {
 
   $parish = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $villages = $uganda
@@ -51,13 +55,23 @@ Route::add('/v1/parish/([a-z-0-9-]*)/villages', function ($param) use($uganda, $
         "name" => $village->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->villages = $names;
+    successResponse([
+      'count' => $count,
+      'villages' => $names
+    ]);
   } catch (ParishNotFoundException $e) {
-    throw new ParishNotFoundException(sprintf("You're sailing in unchartered waters, %s parish not found", $parish));
+    errorResponse(
+      sprintf('Parish not found: %s', $parish),
+      404,
+      'PARISH_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch parish villages',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 

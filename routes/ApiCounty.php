@@ -2,35 +2,40 @@
 use Steampixel\Route;
 use Uganda\Exceptions\CountyNotFoundException;
 
-$obj = new stdClass();
-
 /**
  * County Particular operations
  */
 // Get all County details, without a space e.g. LabworCounty
-Route::add('/v1/county/([a-z-0-9-]*)', function ($param) use($uganda, $obj) {
+Route::add('/v1/county/([a-z-0-9-]*)', function ($param) use($uganda) {
 
   $county = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $county_ = $uganda->county($county);
-    $obj->count = 1;
-    $obj->county = $county_;
+    successResponse([
+      'count' => 1,
+      'county' => $county_
+    ]);
   } catch (CountyNotFoundException $e) {
-    throw new CountyNotFoundException(sprintf("You're sailing in unchartered waters, %s County not found", $county));
+    errorResponse(
+      sprintf('County not found: %s', $county),
+      404,
+      'COUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch county',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all subcounties in a particular county e.g. LabworCounty
-Route::add('/v1/county/([a-z-0-9-]*)/subcounties', function ($param) use($uganda, $obj) {
+Route::add('/v1/county/([a-z-0-9-]*)/subcounties', function ($param) use($uganda) {
 
   $county = insertSpaceBeforeUppercase($param);
   
-  header('Content-Type: application/json');
   try {
     $subcounties_ = $uganda
               ->county($county)
@@ -45,21 +50,30 @@ Route::add('/v1/county/([a-z-0-9-]*)/subcounties', function ($param) use($uganda
         "name" => $subcounty->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->subcounties = $names;
+    successResponse([
+      'count' => $count,
+      'subcounties' => $names
+    ]);
   } catch (CountyNotFoundException $e) {
-    throw new CountyNotFoundException(sprintf("You're sailing in unchartered waters, %s County not found", $county));
+    errorResponse(
+      sprintf('County not found: %s', $county),
+      404,
+      'COUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch county subcounties',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all parsihes in a particular county e.g. LabworCounty
-Route::add('/v1/county/([a-z-0-9-]*)/parishes', function ($param) use($uganda, $obj) {
+Route::add('/v1/county/([a-z-0-9-]*)/parishes', function ($param) use($uganda) {
 
   $county = insertSpaceBeforeUppercase($param);
   
-  header('Content-Type: application/json');
   try {
     $parishes = $uganda
               ->county($county)
@@ -74,21 +88,30 @@ Route::add('/v1/county/([a-z-0-9-]*)/parishes', function ($param) use($uganda, $
         "name" => $parish->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->parishes = $names;
+    successResponse([
+      'count' => $count,
+      'parishes' => $names
+    ]);
   } catch (CountyNotFoundException $e) {
-    throw new CountyNotFoundException(sprintf("You're sailing in unchartered waters, %s County not found", $county));
+    errorResponse(
+      sprintf('County not found: %s', $county),
+      404,
+      'COUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch county parishes',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all parsihes in a particular county e.g. LabworCounty
-Route::add('/v1/county/([a-z-0-9-]*)/villages', function ($param) use($uganda, $obj) {
+Route::add('/v1/county/([a-z-0-9-]*)/villages', function ($param) use($uganda) {
 
   $county = insertSpaceBeforeUppercase($param);
   
-  header('Content-Type: application/json');
   try {
     $villages = $uganda
               ->county($county)
@@ -103,12 +126,22 @@ Route::add('/v1/county/([a-z-0-9-]*)/villages', function ($param) use($uganda, $
         "name" => $village->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->villages = $names;
+    successResponse([
+      'count' => $count,
+      'villages' => $names
+    ]);
   } catch (CountyNotFoundException $e) {
-    throw new CountyNotFoundException(sprintf("You're sailing in unchartered waters, %s County not found", $county));
+    errorResponse(
+      sprintf('County not found: %s', $county),
+      404,
+      'COUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch county villages',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 

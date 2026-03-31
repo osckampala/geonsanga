@@ -2,35 +2,39 @@
 use Steampixel\Route;
 use Uganda\Exceptions\SubCountyNotFoundException;
 
-$obj = new stdClass();
-
 /**
  * Subcounty Particular operations
  */
 // Get all subcounties details, without a space e.g. Abim
-Route::add('/v1/subcounty/([a-z-0-9-]*)', function ($param) use($uganda, $obj) {
+Route::add('/v1/subcounty/([a-z-0-9-]*)', function ($param) use($uganda) {
 
   $subcounty = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $subcounty_ = $uganda->subcounty($subcounty);
-    $obj->count = 1;
-    $obj->subcounty = $subcounty_;
+    successResponse([
+      'count' => 1,
+      'subcounty' => $subcounty_
+    ]);
   } catch (SubCountyNotFoundException $e) {
-    $obj->error = $e->getMessage();
+    errorResponse(
+      sprintf('Subcounty not found: %s', $subcounty),
+      404,
+      'SUBCOUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch subcounty',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all parishes in a subcounty, without a space e.g. Abim
-Route::add('/v1/subcounty/([a-z-0-9-]*)/parishes', function ($param) use($uganda, $obj) {
+Route::add('/v1/subcounty/([a-z-0-9-]*)/parishes', function ($param) use($uganda) {
 
   $subcounty = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $parishes = $uganda
@@ -46,21 +50,29 @@ Route::add('/v1/subcounty/([a-z-0-9-]*)/parishes', function ($param) use($uganda
       ];
     endforeach;
 
-    $obj->count = $count;
-    $obj->parishes = $names;
+    successResponse([
+      'count' => $count,
+      'parishes' => $names
+    ]);
   } catch (SubCountyNotFoundException $e) {
-    throw new SubCountyNotFoundException(sprintf("You're sailing in unchartered waters, %s subcounty not found", $subcounty));
+    errorResponse(
+      sprintf('Subcounty not found: %s', $subcounty),
+      404,
+      'SUBCOUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch subcounty parishes',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 // Get all villages in a subcounty, without a space e.g. Abim
-Route::add('/v1/subcounty/([a-z-0-9-]*)/villages', function ($param) use($uganda, $obj) {
+Route::add('/v1/subcounty/([a-z-0-9-]*)/villages', function ($param) use($uganda) {
 
   $subcounty = insertSpaceBeforeUppercase($param);
-
-  header('Content-Type: application/json');
 
   try {
     $villages = $uganda
@@ -76,13 +88,23 @@ Route::add('/v1/subcounty/([a-z-0-9-]*)/villages', function ($param) use($uganda
       ];
     endforeach;
 
-    $obj->count = $count;
-    $obj->villages = $names;
+    successResponse([
+      'count' => $count,
+      'villages' => $names
+    ]);
   } catch (SubCountyNotFoundException $e) {
-    throw new SubCountyNotFoundException(sprintf("You're sailing in unchartered waters, %s subcounty not found", $subcounty));
+    errorResponse(
+      sprintf('Subcounty not found: %s', $subcounty),
+      404,
+      'SUBCOUNTY_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch subcounty villages',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 },'GET');
 
 

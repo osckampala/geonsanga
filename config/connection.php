@@ -37,4 +37,47 @@ function insertSpaceBeforeUppercase($string) {
   $pattern = '/(?<! )(?!^)(?<![A-Z])[A-Z]/';
   return preg_replace($pattern, ' $0', $string);
 }
+
+/**
+ * Send JSON response with a consistent API contract.
+ *
+ * @param array<string, mixed> $payload
+ */
+function jsonResponse(array $payload, int $statusCode = 200): void
+{
+  http_response_code($statusCode);
+  header('Content-Type: application/json');
+  echo json_encode($payload, JSON_PRETTY_PRINT);
+}
+
+/**
+ * @param array<string, mixed> $data
+ */
+function successResponse(array $data, int $statusCode = 200): void
+{
+  jsonResponse([
+    'success' => true,
+    'data' => $data
+  ], $statusCode);
+}
+
+/**
+ * @param array<string, mixed>|null $details
+ */
+function errorResponse(string $message, int $statusCode, string $errorCode = 'ERROR', ?array $details = null): void
+{
+  $error = [
+    'code' => $errorCode,
+    'message' => $message
+  ];
+
+  if ($details !== null) {
+    $error['details'] = $details;
+  }
+
+  jsonResponse([
+    'success' => false,
+    'error' => $error
+  ], $statusCode);
+}
 ?>

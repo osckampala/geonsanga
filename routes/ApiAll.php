@@ -7,123 +7,158 @@ use Uganda\Exceptions\ParishNotFoundException;
 use Uganda\Exceptions\SubCountyNotFoundException;
 use Uganda\Exceptions\VillageNotFoundException;
 
-$obj = new stdClass();
-
 Route::add('/v1/ping', function () {
-  echo "Hello World";
+  successResponse([
+    'message' => 'Hello World'
+  ]);
 }, 'GET');
 
 // Get all districts
-Route::add('/v1/districts', function () use ($uganda, $obj) {
-  header('Content-Type: application/json');
-
+Route::add('/v1/districts', function () use ($uganda) {
   try {
     $districts = $uganda->districts();
-    $count = count($districts);
-
-    $names = [];
+    $items = [];
     foreach ($districts as $dist):
-      $names[] = [
+      $items[] = [
         "id" => $dist->id,
         "name" => $dist->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->districts = $names;
+    successResponse([
+      'count' => count($items),
+      'districts' => $items
+    ]);
   } catch (DistrictNotFoundException $e) {
-    throw new DistrictNotFoundException(sprintf("You're sailing in unchartered waters, districts not found"));
+    errorResponse(
+      "Districts not found",
+      404,
+      'DISTRICTS_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch districts',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 }, 'GET');
 
 // Get all Counties
-Route::add('/v1/counties', function () use ($uganda, $obj) {
-  header('Content-Type: application/json');
+Route::add('/v1/counties', function () use ($uganda) {
   try {
     $counties = $uganda->counties();
-    $count = count($counties);
-
-    $names = [];
+    $items = [];
     foreach ($counties as $county):
-      $names[] = [
+      $items[] = [
         "id" => $county->id,
         "name" => $county->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->counties = $names;
+    successResponse([
+      'count' => count($items),
+      'counties' => $items
+    ]);
   } catch (CountyNotFoundException $e) {
-    throw new CountyNotFoundException(sprintf("You're sailing in unchartered waters, counties not found"));
+    errorResponse(
+      "Counties not found",
+      404,
+      'COUNTIES_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch counties',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 }, 'GET');
 
 // Get all Sub Counties
-Route::add('/v1/subcounties', function () use ($uganda, $obj) {
-  header('Content-Type: application/json');
+Route::add('/v1/subcounties', function () use ($uganda) {
   try {
     $subcounties = $uganda->subcounties();
-    $count = count($subcounties);
-
-    $names = [];
+    $items = [];
     foreach ($subcounties as $subcounty):
-      $names[] = [
+      $items[] = [
         "id" => $subcounty->id,
         "name" => $subcounty->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->subcounties = $names;
+    successResponse([
+      'count' => count($items),
+      'subcounties' => $items
+    ]);
   } catch (SubCountyNotFoundException $e) {
-    throw new SubCountyNotFoundException(sprintf("You're sailing in unchartered waters, subcounties not found"));
+    errorResponse(
+      "Subcounties not found",
+      404,
+      'SUBCOUNTIES_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch subcounties',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 }, 'GET');
 
 // Get all Parishes
-Route::add('/v1/parishes', function () use ($uganda, $obj) {
-  header('Content-Type: application/json');
+Route::add('/v1/parishes', function () use ($uganda) {
   try {
     $parishes = $uganda->parishes();
-    $count = count($parishes);
-
-    $names = [];
+    $items = [];
     foreach ($parishes as $parish):
-      $names[] = [
+      $items[] = [
         "id" => $parish->id,
         "name" => $parish->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->parishes = $names;
+    successResponse([
+      'count' => count($items),
+      'parishes' => $items
+    ]);
   } catch (ParishNotFoundException $e) {
-    throw new SubCountyNotFoundException(sprintf("You're sailing in unchartered waters, parishes not found"));
+    errorResponse(
+      "Parishes not found",
+      404,
+      'PARISHES_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch parishes',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 }, 'GET');
 
 // Get all Villages
-Route::add('/v1/villages', function () use ($uganda, $obj) {
-  header('Content-Type: application/json');
+Route::add('/v1/villages', function () use ($uganda) {
   try {
     $villages = $uganda->villages();
-    $count = count($villages);
-
-    $names = [];
+    $items = [];
     foreach ($villages as $village):
-      $names[] = [
+      $items[] = [
         "id" => $village->id,
         "name" => $village->name
       ];
     endforeach;
-    $obj->count = $count;
-    $obj->villages = $names;
+    successResponse([
+      'count' => count($items),
+      'villages' => $items
+    ]);
   } catch (VillageNotFoundException $e) {
-    throw new VillageNotFoundException(sprintf("You're sailing in unchartered waters, villages not found"));
+    errorResponse(
+      "Villages not found",
+      404,
+      'VILLAGES_NOT_FOUND'
+    );
+  } catch (\Throwable $e) {
+    errorResponse(
+      'Unable to fetch villages',
+      500,
+      'INTERNAL_SERVER_ERROR'
+    );
   }
-
-  echo json_encode($obj, JSON_PRETTY_PRINT);
 }, 'GET');
